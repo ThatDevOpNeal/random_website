@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { Form, Button } from 'semantic-ui-react';
+import { Form, Button, Message, MessageHeader } from 'semantic-ui-react';
 import propTypes from 'prop-types'
 import Validator from 'validator';
 import InLineError from '../messages/InLineError';
@@ -42,14 +42,24 @@ class LoginForm extends Component {
           errors
       });
       if (Object.keys(errors).length === 0) {
-          this.props.submit(this.state.data);
+          this.setState({ loading: true });
+          this.props
+            .submit(this.state.data)
+            .catch(err => this.setState({ errors: err.response.data.errors, loading: false })
+        );
       }
     };
 
     render() {
-        const { data, errors } = this.state;
+        const { data, errors, loading } = this.state;
         return (
-            <Form onSubmit={this.onSubmitForm}>
+            <Form onSubmit={this.onSubmitForm} loading={loading}>
+                {
+                    errors.global &&
+                    <Message negative >
+                        <MessageHeader>Something went wrong.</MessageHeader>
+                    </Message> 
+                }
                 <Form.Field error={errors.email}>
                     <label htmlFor='email'>
                         Email
@@ -65,19 +75,19 @@ class LoginForm extends Component {
                     {errors.email && <InLineError text={errors.email} />}
                 </Form.Field>
                 <Form.Field error={errors.password}>
-                <label htmlFor='password'>
-                    Password
-                </label>
-                <input 
-                    type='password'
-                    className='password'
-                    name='password'
-                    placeholder='password...'
-                    value={data.password}
-                    onChange={this.onFormChange}
-                />
-                {errors.password && <InLineError text={errors.password} />}
-            </Form.Field>
+                    <label htmlFor='password'>
+                        Password
+                    </label>
+                    <input 
+                        type='password'
+                        className='password'
+                        name='password'
+                        placeholder='password...'
+                        value={data.password}
+                        onChange={this.onFormChange}
+                    />
+                    {errors.password && <InLineError text={errors.password} />}
+                </Form.Field>
                 <Button primary>Login</Button>
             </Form>
         );
