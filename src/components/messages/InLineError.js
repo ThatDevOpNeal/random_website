@@ -1,5 +1,5 @@
 import React  from 'react'
-import PropTypes from 'prop-types';
+import propTypes from 'prop-types';
 
 const InLineError = ({ text }) => (
     <span style={{ color: "#ae5856" }}>
@@ -8,7 +8,7 @@ const InLineError = ({ text }) => (
 );
 
 InLineError.PropTypes = {
-    text: PropTypes.string.isRequired
+    text: propTypes.string.isRequired
 };
 
 export default InLineError;
